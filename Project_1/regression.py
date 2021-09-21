@@ -30,7 +30,7 @@ class OLS(object):
             for i in range(0, p+1): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
-
+        
         self.beta_OLS = np.linalg.pinv(M) @ z.reshape([n, 1])
         self.p = p
         
@@ -53,13 +53,57 @@ class OLS(object):
                 c += 1
         return M @ self.beta_OLS
     
-    def var_beta(self):
-        return 
+    def MSE(self, x, y, z):
+        """
+        Calculate MSE using 
+        
+        MSE = 1/n * sum_i ((z_pred_i - z_i)**2)
+
+        :param x: array of x coordinates
+        :param y: array of y coordinates
+        :param z: array of known z values      
+
+        """
+        # Construct design matrix
+        n = len(x)
+        M = np.zeros([n, (self.p+1)**2])
+        c = 0
+        for j in range(0, self.p+1): # y**j
+            for i in range(0, self.p+1): # x **i
+                M[:, c] = (x**i)*(y**j)
+                c += 1
+        
+        z_pred = M @ self.beta_OLS    
+        
+        return np.mean((z_pred - z.reshape([n, 1]))**2)
+        
     
-    
-    
-    
-    
-    
-    
+    def var_beta(self, x, y, z):
+        """
+        Calculate variance in beta by comparing predicted values with test 
+        values according to Hastie et al:
+        
+        var(beta) = inv(X.T X) * var(y), where:    
+        var(y) = 1 / (N - p - 1) * sum((z_i  - z_pred_i)**2)
+        
+        :param x: array of x coordinates
+        :param y: array of y coordinates
+        :param z: array of known z values
+        
+        :return: array of estiamted variance for beta values
+        """
+        # Construct design matrix
+        n = len(x)
+        M = np.zeros([n, (self.p+1)**2])
+        c = 0
+        for j in range(0, self.p+1): # y**j
+            for i in range(0, self.p+1): # x **i
+                M[:, c] = (x**i)*(y**j)
+                c += 1
+        
+        z_pred = M @ self.beta_OLS
+        variance_z = (1/(n - self.p - 1))*np.sum((
+            z_pred - z.reshape([n, 1]))**2)
+        # Test ved bruk av M fra init gir samme resultat
+        return np.diagonal(variance_z*np.linalg.pinv(M.T @ M))  
     

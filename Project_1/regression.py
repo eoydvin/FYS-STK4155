@@ -33,7 +33,31 @@ class OLS(object):
         
         self.beta_OLS = np.linalg.pinv(M) @ z.reshape([n, 1])
         self.p = p
+    
+    def R2(self, x, y, z):
+        """
+        Calculate R2 using 
         
+        R2 = 1 - (sum_i ((z_pred_i - z_i)**2)) / (sum_i ((z_i_mean - z_i)**2))
+
+        :param x: array of x coordinates
+        :param y: array of y coordinates
+        :param z: array of known z values      
+
+        """
+        # Construct design matrix
+        n = len(x)
+        M = np.zeros([n, (self.p+1)**2])
+        c = 0
+        for j in range(0, self.p+1): # y**j
+            for i in range(0, self.p+1): # x **i
+                M[:, c] = (x**i)*(y**j)
+                c += 1
+        
+        z_pred = M @ self.beta_OLS    
+        return 1 - np.sum((z_pred - z.reshape([n, 1]))**2)/np.sum(
+            (np.mean(z) - z.reshape([n, 1]))**2)    
+                
     def predict(self, x, y):
         """
         Predict f(x, y) = z for given x and y

@@ -101,7 +101,7 @@ class OLS(object):
         
         z_pred = M @ self.beta_OLS    
         
-        return np.mean((z_pred - z.reshape([n, 1]))**2)
+        return np.mean((z_pred - z.reshape([n, 1]))**2) 
         
     
     def var_beta(self, x, y, z):
@@ -137,7 +137,7 @@ class Ridge(object):
     """
     Fits a polynomial to given data using OLS.         
     """
-    def __init__(self, x, y, z, p):
+    def __init__(self, x, y, z, p, lam):
         """
         Sets up design matrix for a k-order polynomial. 
         
@@ -156,7 +156,8 @@ class Ridge(object):
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
-        self.beta_OLS = np.linalg.pinv(M) @ z.reshape([n, 1])
+        self.beta_Ridge = np.linalg.pinv(
+            M.T @ M + np.eye(M.shape[1])*lam) @ M.T @ z.reshape([n, 1])
         self.p = p
     
     def R2(self, x, y, z):
@@ -179,7 +180,7 @@ class Ridge(object):
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
-        z_pred = M @ self.beta_OLS    
+        z_pred = M @ self.beta_Ridge    
         return 1 - np.sum((z_pred - z.reshape([n, 1]))**2)/np.sum(
             (np.mean(z) - z.reshape([n, 1]))**2)    
                 
@@ -200,7 +201,7 @@ class Ridge(object):
             for i in range(0, self.p+1): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
-        return M @ self.beta_OLS
+        return M @ self.beta_Ridge
     
     def MSE(self, x, y, z):
         """
@@ -222,7 +223,7 @@ class Ridge(object):
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
-        z_pred = M @ self.beta_OLS    
+        z_pred = M @ self.beta_Ridge    
         
         return np.mean((z_pred - z.reshape([n, 1]))**2)
         
@@ -250,7 +251,7 @@ class Ridge(object):
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
-        z_pred = M @ self.beta_OLS
+        z_pred = M @ self.beta_Ridge
         variance_z = (1/(n - self.p - 1))*np.sum((
             z_pred - z.reshape([n, 1]))**2)
         # Test ved bruk av M fra init gir samme resultat

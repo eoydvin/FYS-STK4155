@@ -24,13 +24,12 @@ class OLS(object):
         
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (p+1)**2])
+        M = np.zeros([n, int((p+1)*(p+2)/2)])
         c = 0
         for j in range(0, p+1): # y**j
-            for i in range(0, p+1): # x **i
+            for i in range(0, p+1-j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
-        
         self.beta_OLS = np.linalg.pinv(M.T @ M) @ M.T @ z.reshape([n, 1])
         
         #np.linalg.pinv(M) @ z.reshape([n, 1])
@@ -49,10 +48,10 @@ class OLS(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -71,10 +70,10 @@ class OLS(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         return M @ self.beta_OLS
@@ -92,10 +91,10 @@ class OLS(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -120,10 +119,10 @@ class OLS(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -149,16 +148,17 @@ class Ridge(object):
         
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (p+1)**2])
+        M = np.zeros([n, int((p+1)*(p+2)/2)])
         c = 0
         for j in range(0, p+1): # y**j
-            for i in range(0, p+1): # x **i
+            for i in range(0, p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
         self.beta_Ridge = np.linalg.pinv(
             M.T @ M + np.eye(M.shape[1])*lam) @ M.T @ z.reshape([n, 1])
         self.p = p
+        self.lam = lam
     
     def R2(self, x, y, z):
         """
@@ -173,10 +173,10 @@ class Ridge(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1-j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -195,10 +195,10 @@ class Ridge(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1-j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         return M @ self.beta_Ridge
@@ -216,10 +216,10 @@ class Ridge(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1-j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -244,10 +244,10 @@ class Ridge(object):
         """
         # Construct design matrix
         n = len(x)
-        M = np.zeros([n, (self.p+1)**2])
+        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
         c = 0
         for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1): # x **i
+            for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
         
@@ -255,5 +255,6 @@ class Ridge(object):
         variance_z = (1/(n - self.p - 1))*np.sum((
             z_pred - z.reshape([n, 1]))**2)
         # Test ved bruk av M fra init gir samme resultat
-        return np.diagonal(variance_z*np.linalg.pinv(M.T @ M))  
+        return np.diagonal(variance_z*np.linalg.pinv(
+            M.T @ M + np.eye(M.shape[1])*self.lam) @ M.T @ M @ (np.linalg.pinv(M.T @ M + np.eye(M.shape[1])*self.lam)).T)  
     

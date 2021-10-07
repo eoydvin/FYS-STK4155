@@ -61,7 +61,7 @@ class RadarImage(object):
         nedbor_color = sk_color.rgba2rgb(sk_io.imread(
             BytesIO(self.response_nedbor.content)))
         
-        no_red = nedbor_color[:, :, 0] < 0.8  # mask urelevant colors
+        no_red = nedbor_color[:, :, 0] < 0.8  # mask unrelevant colors
         
         grayscale_nedbor = sk_color.rgb2gray(nedbor_color) #*self.no_red
         

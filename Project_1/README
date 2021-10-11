@@ -1,5 +1,7 @@
 This is the repository for Project 1 in the course FYS-STK4155 at UiO. It contains the following files:
 
+Project report:
+
 Python modules:
 - franke_function.py: Returns z according to Franke's Function given x and y
 - regression.py: My own implementations of OLS and Ridge regression
@@ -15,5 +17,3 @@ Jupyter notebooks:
 
 Numpy file:
 - nedbor_radar.npy: Example weather radar image from an weather event at 2021-10-06 kl 11:45
-
-Project report:

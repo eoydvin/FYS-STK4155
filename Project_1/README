@@ -1,6 +1,7 @@
 This is the repository for Project 1 in the course FYS-STK4155 at UiO. It contains the following files:
 
 Project report:
+- Project_1.pdf: Report for project 1.
 
 Python modules:
 - franke_function.py: Returns z according to Franke's Function given x and y.

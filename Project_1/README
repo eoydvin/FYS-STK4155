@@ -1,4 +1,4 @@
-This is a repository for the first project in the course FYS-STK4155 at UiO. It contains the following code:
+This is the repository for Project 1 in the course FYS-STK4155 at UiO. It contains the following files:
 
 Python modules:
 - franke_function.py: Returns z according to Franke's Function given x and y

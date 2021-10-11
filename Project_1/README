@@ -4,8 +4,8 @@ Project report:
 
 Python modules:
 - franke_function.py: Returns z according to Franke's Function given x and y.
-- regression.py: My own implementations of OLS and Ridge regression.
-- nedborradar.py: My own class for downloading weather radar image for oslo region. 
+- regression.py: My own implementation of OLS and Ridge regression.
+- nedborradar.py: My own class for downloading weather radar image for the Oslo region. 
 
 Jupyter notebooks:
 - Exercise 1: Plot of Franke's Function, some tests that my own implementations behaves as expected. 

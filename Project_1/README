@@ -14,7 +14,7 @@ Jupyter notebooks:
 - Exercise 4: CV and Bootstrap on Franke's Function using Ridge regression.
 - Exercise 5: CV and Bootstrap on Franke's Function using Lasso regression. 
 - Exercise 6: CV on weather radar image using OLS, Ridge and Lasso regression.
-- nedbor_radar.npy: Example how to use nedborradar.py.
+- Exercise 6_random_sampling: Variant of Exercise 6 where I draw random samples from image instead of reducing the resolution with blurring. 
 
 Numpy file:
 - nedbor_radar.npy: Example weather radar image from an weather event at 2021-10-06 kl 11:45.

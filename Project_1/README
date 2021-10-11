@@ -19,3 +19,6 @@ Jupyter notebooks:
 
 Numpy file:
 - nedbor_radar.npy: Example weather radar image from an weather event at 2021-10-06 kl 11:45.
+
+Known errors/future improvements:
+- Splitting data into train and test groups should happen before I scale the data. 

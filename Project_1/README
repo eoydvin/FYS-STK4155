@@ -1,0 +1,19 @@
+This is a repository for the first project in the course FYS-STK4155 at UiO. It contains the following code:
+
+Python modules:
+- franke_function.py: Returns z according to Franke's Function given x and y
+- regression.py: My own implementations of OLS and Ridge regression
+- nedborradar.py: My own class for downloading weather radar image for oslo region. 
+
+Jupyter notebooks:
+- Exercise 1: Plot of Franke's Function, some tests that my own implementations behaves as expected. 
+- Exercise 2: Bootstrap on Franke's Function using OLS. Comparison of analytical and estimated variance in beta values. 
+- Exercise 3: CV on Franke's Function using OLS. 
+- Exercise 4: CV and Bootstrap on Franke's Function using Ridge regression
+- Exercise 5: CV and Bootstrap on Franke's Function using Lasso regression 
+- Exercise 6: CV on weather radar image using OLS, Ridge and Lasso regression 
+
+Numpy file:
+- nedbor_radar.npy: Example weather radar image from an weather event at 2021-10-06 kl 11:45
+
+Project report:

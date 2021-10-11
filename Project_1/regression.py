@@ -12,7 +12,7 @@ class OLS(object):
     """
     Fits a polynomial to given data using OLS.         
     """
-    def __init__(self, x, y, z, p):
+    def __init__(self, x, y, z, p, design='orig'):
         """
         Sets up design matrix for a k-order polynomial. 
         
@@ -30,10 +30,21 @@ class OLS(object):
             for i in range(0, p+1-j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
+
+        if design == 'skl': # test to study differences  with skl
+            n = len(x)
+            M = np.zeros([n, int((p+1)*(p+2)/2)])
+            c = 0
+            for i in range(0, p+1): # y**j
+                for j in range(0, i+1): # x **i
+                    M[:, c] = (x**(i - j))*(y**j)
+                    c += 1
+
         self.beta_OLS = np.linalg.pinv(M.T @ M) @ M.T @ z.reshape([n, 1])
         
         #np.linalg.pinv(M) @ z.reshape([n, 1])
         self.p = p
+        self.design = design
     
     def R2(self, x, y, z):
         """
@@ -97,7 +108,17 @@ class OLS(object):
             for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
-        
+
+        if self.design == 'skl': # test to study differences  with skl
+            n = len(x)
+            M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
+            c = 0
+            for i in range(0, self.p+1): # y**j
+                for j in range(0, i+1): # x **i
+                    M[:, c] = (x**(i - j))*(y**j)
+                    c += 1
+
+       
         z_pred = M @ self.beta_OLS    
         
         return np.mean((z_pred - z.reshape([n, 1]))**2) 
@@ -125,6 +146,16 @@ class OLS(object):
             for i in range(0, self.p+1 - j): # x **i
                 M[:, c] = (x**i)*(y**j)
                 c += 1
+        
+        if self.design == 'skl': # test to study differences  with skl
+            n = len(x)
+            M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
+            c = 0
+            for i in range(0, self.p+1): # y**j
+                for j in range(0, i+1): # x **i
+                    M[:, c] = (x**(i - j))*(y**j)
+                    c += 1
+
         
         z_pred = M @ self.beta_OLS
         variance_z = (1/(n - self.p - 1))*np.sum((

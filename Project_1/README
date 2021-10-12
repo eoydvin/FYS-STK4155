@@ -1,4 +1,10 @@
-This is the repository for Project 1 in the course FYS-STK4155 at UiO. It contains the following files:
+This is the repository for Project 1 in the course FYS-STK4155 at UiO. 
+
+Known errors/future improvements:
+- Splitting data into train and test groups should happen before I scale the data. MSE could then be estimated by transforming predicted values back to pre scaled data. 
+- I scaled data by dividing by its mean value, this worked, but what I meant to do was to divide by its variance. This will be corrected in future projects:) 
+
+This repo contains the following files:
 
 Project report:
 - Project_1.pdf: Report for project 1.
@@ -20,5 +26,3 @@ Jupyter notebooks:
 Numpy file:
 - nedbor_radar.npy: Example weather radar image from an weather event at 2021-10-06 kl 11:45.
 
-Known errors/future improvements:
-- Splitting data into train and test groups should happen before I scale the data. MSE could then be estimated by transforming predicted values back to pre scaled data. 

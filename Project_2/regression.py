@@ -13,7 +13,8 @@ class OLS(object):
     Fits a polynomial to given data using OLS. Uses stcastic gradient descent.    
 
     """
-    def __init__(self, p, learning_rate, batch_size=256, max_iter=100):
+    def __init__(self, p, learning_rate, batch_size=32, max_iter=100, 
+                 n_epochs=50):
         """        
         Fit polynomial using SGD. 
         
@@ -30,85 +31,65 @@ class OLS(object):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.max_iter = max_iter
+        self.n_epochs = n_epochs
+    
+    def p_design(self, X):
+        """
+        Construct design matrix for a polynomial fit. 
+
+        """
+        M = np.zeros([X.shape[0], int((self.p+1)*(self.p+2)/2)])
+        c = 0
+        for j in range(0, self.p+1): # y**j
+            for i in range(0, self.p+1-j): # x **i
+                M[:, c] = (X[:, 0]**i)*(X[:, 1]**j)
+                c += 1
+        return M
+            
         
-    def fit(x, z):
+    def fit(self, X, z):
         """
         Fit polynomial using SGD. 
         
         Parameters
         ----------
-        x : Matrix of features and samples
+        X : Matrix of features and samples
         z : Array of corresponding realizations
-  
-
-        Returns
-        -------
-        None.
 
         """
-        # Construct design matrix
-        n = len(x)
-        M = np.zeros([n, int((p+1)*(p+2)/2)])
-        c = 0
-        for j in range(0, p+1): # y**j
-            for i in range(0, p+1-j): # x **i
-                M[:, c] = (x**i)*(y**j)
-                c += 1
-        # SGD:
-            #del inn i b batcher,
-            #beregn b for en batch
-            #send beta videre til neste batch
-
-        self.beta_OLS = np.linalg.pinv(M.T @ M) @ M.T @ z.reshape([n, 1])
+        M = self.p_design(X)
+        m = int(M.shape[0]/self.batch_size) # number minibatches       
         
-        #np.linalg.pinv(M) @ z.reshape([n, 1])
-        self.p = p
-        self.design = design
+        w = np.ones(M.shape[1]).reshape(-1, 1) 
+        # maybe use random numbers that us prop. to eigenvalues? 
+        
+        for epoch in range(self.n_epochs):
+            # lag batcher her:) 
+            Xz = np.hstack([M, z])
+            np.random.shuffle(Xz) #shuffle
+            Xz_split = np.array_split(Xz, m) #split into batches
+        
+            for batch in Xz_split:
+                grad = 2*batch[:, 0:-1].T @ ((batch[:, 0:-1] @ w) - batch[:, -1].reshape(-1, 1))
+                eta = self.learning_rate
+                w = w - eta*grad       
+        self.w = w
+        
     
-    def R2(self, x, y, z):
+    def predict(self, X):
         """
-        Calculate R2 using 
+        Predict f(x, y) = z for given X[x, y] a
         
-        R2 = 1 - (sum_i ((z_pred_i - z_i)**2)) / (sum_i ((z_i_mean - z_i)**2))
-
-        :param x: array of x coordinates
-        :param y: array of y coordinates
-        :param z: array of known z values      
-
-        """
-        # Construct design matrix
-        n = len(x)
-        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
-        c = 0
-        for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1 - j): # x **i
-                M[:, c] = (x**i)*(y**j)
-                c += 1
-        
-        z_pred = M @ self.beta_OLS    
-        return 1 - np.sum((z_pred - z.reshape([n, 1]))**2)/np.sum(
-            (np.mean(z) - z.reshape([n, 1]))**2)    
-                
-    def predict(self, x, y):
-        """
-        Predict f(x, y) = z for given x and y
-        
-        :param x: array of x coordinates
-        :param y: array of y coordinates
+        Parameters
+        ----------
+        X : Matrix of features and samples
         
         :return: array of predicted z values
         """
-        # Construct design matrix
-        n = len(x)
-        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
-        c = 0
-        for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1 - j): # x **i
-                M[:, c] = (x**i)*(y**j)
-                c += 1
-        return M @ self.beta_OLS
+        M = self.p_design(X)
+        return M @ self.w
     
-    def MSE(self, x, y, z):
+    def MSE(self, X, z):
         """
         Calculate MSE using 
         
@@ -119,47 +100,29 @@ class OLS(object):
         :param z: array of known z values      
 
         """
-        # Construct design matrix
-        n = len(x)
-        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
-        c = 0
-        for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1 - j): # x **i
-                M[:, c] = (x**i)*(y**j)
-                c += 1
-       
-        z_pred = M @ self.beta_OLS    
+        M = self.p_design(X)    
+        z_pred = M @ self.w   
         
-        return np.mean((z_pred - z.reshape([n, 1]))**2) 
+        #print(self.w)
+        #print(z_pred.shape)
+        return np.mean((z_pred - z.reshape([M.shape[0], 1]))**2) 
         
-    
-    def var_beta(self, x, y, z):
+    def R2(self, X, z):
         """
-        Calculate variance in beta by comparing predicted values with test 
-        values according to Hastie et al:
+        Calculate R2 using 
         
-        var(beta) = inv(X.T X) * var(y), where:    
-        var(y) = 1 / (N - p - 1) * sum((z_i  - z_pred_i)**2)
-        
+        R2 = 1 - (sum_i ((z_pred_i - z_i)**2)) / (sum_i ((z_i_mean - z_i)**2))
+
         :param x: array of x coordinates
         :param y: array of y coordinates
-        :param z: array of known z values
-        
-        :return: array of estiamted variance for beta values
-        """
-        # Construct design matrix
-        n = len(x)
-        M = np.zeros([n, int((self.p+1)*(self.p+2)/2)])
-        c = 0
-        for j in range(0, self.p+1): # y**j
-            for i in range(0, self.p+1 - j): # x **i
-                M[:, c] = (x**i)*(y**j)
-                c += 1
+        :param z: array of known z values      
 
+        """
+        M = self.p_design(X)    
+        z_pred = M @ self.w   
         
-        z_pred = M @ self.beta_OLS
-        variance_z = (1/(n - self.p - 1))*np.sum((
-            z_pred - z.reshape([n, 1]))**2)
-        # Test ved bruk av M fra init gir samme resultat
-        return np.diagonal(variance_z*np.linalg.pinv(M.T @ M))  
+        return 1 - np.sum((z_pred - z.reshape([M.shape[0], 1]))**2)/np.sum(
+            (np.mean(z) - z.reshape([M.shape[0], 1]))**2)    
+    
+
 

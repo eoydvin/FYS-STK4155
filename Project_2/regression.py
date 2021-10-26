@@ -13,8 +13,8 @@ class OLS(object):
     Fits a polynomial to given data using OLS. Uses stcastic gradient descent.    
 
     """
-    def __init__(self, p, learning_rate, batch_size=32, max_iter=100, 
-                 n_epochs=50):
+    def __init__(self, p, learning_schedule, batch_size=32, 
+                 max_iter=100, n_epochs=50):
         """        
         Fit polynomial using SGD. 
         
@@ -28,10 +28,10 @@ class OLS(object):
         """
         
         self.p = p
-        self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.max_iter = max_iter
         self.n_epochs = n_epochs
+        self.learning_schedule = learning_schedule
     
     def p_design(self, X):
         """
@@ -63,15 +63,19 @@ class OLS(object):
         w = np.ones(M.shape[1]).reshape(-1, 1) 
         # maybe use random numbers that us prop. to eigenvalues? 
         
+
         for epoch in range(self.n_epochs):
             # lag batcher her:) 
             Xz = np.hstack([M, z])
             np.random.shuffle(Xz) #shuffle
             Xz_split = np.array_split(Xz, m) #split into batches
-        
+            
+            t = 0
             for batch in Xz_split:
-                grad = 2*batch[:, 0:-1].T @ ((batch[:, 0:-1] @ w) - batch[:, -1].reshape(-1, 1))
-                eta = self.learning_rate
+                grad = 2*batch[:, 0:-1].T @ ((
+                    batch[:, 0:-1] @ w) - batch[:, -1].reshape(-1, 1))
+                eta = self.learning_schedule(epoch*m + t)
+                t = t + 1
                 w = w - eta*grad       
         self.w = w
         

@@ -74,7 +74,10 @@ class OLS(object):
             for batch in Xz_split:
                 g = (1.0/m) *batch[:, 0:-1].T @ ((
                     batch[:, 0:-1] @ w) - batch[:, -1].reshape(-1, 1))
-                v = self.alpha*v - self.learning_rate*g
+                if not np.isnan(np.sum(g)) #dont deal with nan
+                    v = self.alpha*v - self.learning_rate*g
+                else:
+                    v = 0
                 w = w + v
 
         self.w = w

@@ -63,9 +63,9 @@ class NeuralNetwork:
         self.weights = [w * scale for w in self.weights]
 
         self.a_h = [i for i in range(len(self.hidden_layer_sizes) + 1)] #+1 is outputlayer
+        self.z_h = self.a_h.copy()
         #TODO
-        # Implement general f', derivative in backpropagation
-        # List of activation functions
+        # SDG with momentum
         
         if activation_func == 'logistic':
             from neural_network import logistic
@@ -92,14 +92,15 @@ class NeuralNetwork:
     def feed_forward(self):
     
         # feed-forward for training
-        self.a_h[0] = self.activation_func( 
-            np.matmul(self.X_data, self.weights[0]) + self.bias[0])
-        for l in range(1, len(self.hidden_layer_sizes)):
-            self.a_h[l] = self.activation_func( 
-                np.matmul(self.a_h[l - 1], self.weights[l])+self.bias[l])
+        self.z_h[0] = np.matmul(self.X_data, self.weights[0]) + self.bias[0]
+        self.a_h[0] = self.activation_func( self.z_h[0] )
         
-        self.a_h[-1] = self.output_func(
-            np.matmul(self.a_h[-2], self.weights[-1]) + self.bias[-1])
+        for l in range(1, len(self.hidden_layer_sizes)):
+            self.z_h[l] = np.matmul(self.a_h[l - 1], self.weights[l])+self.bias[l]
+            self.a_h[l] = self.activation_func( self.z_h[l] )
+        
+        self.z_h[-1] = np.matmul(self.a_h[-2], self.weights[-1]) + self.bias[-1]
+        self.a_h[-1] = self.output_func(self.z_h[-1])
 
     def backpropagation(self):
         error = self.a_h[-1] - self.Y_data #delta output
@@ -115,20 +116,17 @@ class NeuralNetwork:
             self.weights[l] -= self.eta * weights_gradient
             self.bias[l] -= self.eta * bias_gradient
             
-            
-            #error = np.matmul(
-            #    error, self.weights[l].T) *self.a_h[l-1]*(1 - self.a_h[l-1])
-            
             error = np.matmul(
-                error, self.weights[l].T)* self.d_activation_func( 
-                        np.matmul(self.a_h[l - 1], self.weights[l]) + self.bias[l]) 
+                error, self.weights[l].T)*self.d_activation_func(self.z_h[l-1])
+                        
+            #np.matmul(self.a_h[l - 1], self.weights[l]) + self.bias[l]) 
 
         weights_gradient = np.matmul(self.X_data.T, error)
         bias_gradient = np.sum(error, axis=0)
 
         if self.lmbd > 0.0:
             weights_gradient += self.lmbd * self.weights[0]
-
+        
         
         self.weights[0] -= self.eta * weights_gradient
         self.bias[0] -= self.eta * bias_gradient
@@ -176,8 +174,9 @@ def relu(x):
     np.clip(x, a_min = 0.0, a_max = sys.float_info.max, out = x)
     return x
 
-def relu_derivative(self, x) :
+def relu_derivative(x) :
     return relu(np.heaviside(x, 0.0) )
 
-def leakyrelu(self, x) :
-    return (x >= 0.0) * x + (x < 0.0) * (self.alpha * x)
+def leakyrelu(x):
+    alpha = 0.01
+    return (x >= 0.0) * x + (x < 0.0) * (alpha * x)

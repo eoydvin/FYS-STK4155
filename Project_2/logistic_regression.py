@@ -38,9 +38,9 @@ class SGDRegressor:
             self.beta -= eta*grad
 
 class LogisticRegression(SGDRegressor):
-    def __init__ (self, eta0=0.1, max_iter=200, lamb = 0):
+    def __init__ (self, eta0=0.1, max_iter=200, C = 1):
             SGDRegressor.__init__(self, eta0, max_iter)
-            self.lamb = lamb # regularization parameter
+            self.alpha = 1.0/C # regularization parameter
 
     def p_sigmoid(self, xb):
         return np.exp(xb)/(1 + np.exp(xb)) 
@@ -49,9 +49,9 @@ class LogisticRegression(SGDRegressor):
 
         X = np.c_[np.ones((x.shape[0],1)), x] #designmatrix
 
-        
-        def G(X, y, beta):
-            return - X.T @ (y - self.p_sigmoid(X @ beta)) + self.lamb*beta
+        #evt berre ta valig cost funksjon og bruk autograd.. 
+        def G(X, y, beta):            
+            return -X.T @ (y - self.p_sigmoid(X @ beta)) + self.alpha*beta
          
         self.SGD(X, y, G)
 

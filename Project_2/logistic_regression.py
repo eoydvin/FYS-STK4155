@@ -1,22 +1,20 @@
 import numpy as np
 
 class SGDRegressor:
-    def __init__(self, eta0, max_iter=200, penalty = None):
+    def __init__(self, eta0, max_iter):
         self.max_iter = max_iter
-        self.penalty = penalty
         self.eta0 = eta0
 
     def SGD(self, X, y, G):        
-        n_epochs = 500
         t0, t1 = 5, 50
         
         def learning_schedule(t):
             return t0/(t + t1)
 
-        self.beta = np.random.random([X.shape[1], 1])
+        self.beta = np.zeros([X.shape[1], 1])
         m = X.shape[0]
 
-        for epoch in range(n_epochs):
+        for epoch in range(self.max_iter):
             for i in range(m):
                 random_index = np.random.randint(m) #random number
                 #compte gradient at different spots..!
@@ -31,7 +29,7 @@ class SGDRegressor:
         Used to test SGD algorithm
         """
 
-        self.beta = np.random.random([X.shape[1], 1])
+        self.beta = np.zeros([X.shape[1], 1])
         
         eta = 0.01
         Niterations = 1000

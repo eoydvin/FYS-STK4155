@@ -7,7 +7,6 @@ Created on Mon Sep 20 13:01:26 2021
 """
 
 import autograd.numpy as np
-from autograd import elementwise_grad as egrad 
 from autograd import grad
 
 class OLS(object):

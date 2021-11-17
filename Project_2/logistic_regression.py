@@ -17,7 +17,6 @@ class SGDRegressor:
         for epoch in range(self.max_iter):
             for i in range(m):
                 random_index = np.random.randint(m) #random number
-                #compte gradient at different spots..!
                 xi = X[random_index:random_index+1] #1 row from x
                 yi = y[random_index:random_index+1] #corresponding y
                 gradients = G(xi, yi, self.beta) #compute gradient at this point

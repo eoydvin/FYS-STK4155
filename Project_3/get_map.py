@@ -106,8 +106,8 @@ if __name__ == "__main__":
     #lat_indice = [1532, 1536]
     #lon_indice = [578, 581]
     
-    lat_indice = [1532, 1536]
-    lon_indice = [578, 581]
+    lat_indice = [1531, 1537]
+    lon_indice = [577, 582]
     
     start = '2018-07-01' 
     stop = '2018-09-11'
@@ -137,5 +137,5 @@ if __name__ == "__main__":
     times = np.array(times).reshape(-1, 1)
     #make pandas dataframe and set index as col number 0
     df = pd.DataFrame(np.hstack([times, reflectivity])).set_index(0)
-    df.to_pickle('radar.pkl')
+    df.to_pickle('radar_larger.pkl')
         

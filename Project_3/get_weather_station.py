@@ -11,7 +11,9 @@ import pandas as pd
 import datetime
 
 
-def get_rain_from_frost_hourly(ids, start, end, elements="sum(precipitation_amount PT1H)", clientID="6e7d29f6-8f77-4317-b9a6-846a7052852c"):
+def get_rain_from_frost_hourly(
+        ids, start, end, elements="sum(precipitation_amount PT1H)", 
+        clientID="6e7d29f6-8f77-4317-b9a6-846a7052852c"):
     url = "https://frost.met.no/observations/v0.jsonld"
     reftime = f"{start}/{end}"
     headers = {"Accept": "application/json"}
@@ -25,13 +27,23 @@ def get_rain_from_frost_hourly(ids, start, end, elements="sum(precipitation_amou
     r = requests.get(url=url, params=parameters, headers=headers, auth=(clientID, ""))
     return r.json()
 
-
+def get_precipitation_PT1M(
+        ids, start, end, elements="sum(precipitation_amount PT1M)",
+    clientID = "6e7d29f6-8f77-4317-b9a6-846a7052852c"):
+    referencetime = f"{start}/{end}"
+    url='https://frost.met.no/observations/v0.jsonld'
+    headers = {"Accept": "application/json", "Authorization": f"Basic {clientID}"}
+    params = {"sources": ids, "elements": elements, "referencetime": referencetime}
+    r = requests.get(url, params, headers=headers, auth=(clientID, ""))
+    return r.json()
 
 if __name__ == "__main__":
     # CML start = '2018-08-01' 
     # CML end = '2018-09-11'
-    start = '2018-07-01' 
-    end = '2018-09-11'
+    start1 = '2018-07-01' 
+    end1 = '2018-08-01' 
+    start2 = '2018-08-01' 
+    end2 = '2018-09-11'
     met_stations = {
         "Rustadskogen": {
             "shortname": "Rustadskogen",
@@ -41,12 +53,14 @@ if __name__ == "__main__":
             "lat": "59.6703",
             "lon": "10.8107" 
     }}
-    station = get_rain_from_frost_hourly(met_stations['Rustadskogen']['id'], start, end)['data']
+    station1 = get_precipitation_PT1M(met_stations['Rustadskogen']['id'], start1, end1)['data']
+    station2 = get_precipitation_PT1M(met_stations['Rustadskogen']['id'], start2, end2)['data']
     t = []
     p = []
     
-    for obs in station:
-        t.append(datetime.datetime.strptime(obs['referenceTime'][0:13], '%Y-%m-%dT%H'))
+    for obs in station1 + station2:
+        t.append(datetime.datetime.strptime(obs['referenceTime'][0:16], '%Y-%m-%dT%H:%M'))
+        print(t)
         p.append(obs['observations'][0]['value'])
     
     t = np.array(t).reshape(-1, 1)

@@ -106,12 +106,19 @@ if __name__ == "__main__":
     #lat_indice = [1532, 1536]
     #lon_indice = [578, 581]
     
+    # dataset for classification
+    #lat_indice = [1531, 1537]
+    #lon_indice = [577, 582]
+    #start = '2018-07-01' 
+    #stop = '2018-09-11'
+    
+    #dataset for interpolation:
     lat_indice = [1531, 1537]
     lon_indice = [577, 582]
-    
-    start = '2018-07-01' 
-    stop = '2018-09-11'
-    #CML_stop = '2018-09-11'
+        
+    start = '2018-09-08'
+    stop = '2018-09-08'
+
     time_start = datetime.datetime.strptime(start, '%Y-%m-%d')
     time_stop = datetime.datetime.strptime(stop, '%Y-%m-%d')
     daterange = pd.date_range(time_start, time_stop).tolist()

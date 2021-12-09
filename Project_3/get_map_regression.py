@@ -28,7 +28,7 @@ from radar import radar_reflectivity_thredds
 
 
     
-lat_indice = [1445, 1697]
+lat_indice = [1445, 1697] #found by trial and error
 lon_indice = [451, 665]
 date = '2018-09-08'
 date = datetime.datetime.strptime(date, '%Y-%m-%d')

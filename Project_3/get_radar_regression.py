@@ -37,7 +37,7 @@ ds = radar_reflectivity_thredds(date, lat_indice, lon_indice)
 data = ds.variables['equivalent_reflectivity_factor'][:].data
 data[data == 9.96921e+36] = 0 # zero rainfall
 
-data_ = data[44, ::4, ::4] # interesting cloud here
+data_ = data[44, ::16, ::16] # interesting cloud here
     
 np.save('radar_regression.npy', data_)
     

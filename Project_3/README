@@ -1,0 +1,17 @@
+This is the repository for Project 2 in the course FYS-STK4155 at UiO. It contains the following files:
+
+Project report:
+- Report_Project_2.pdf: Report for project 2.
+
+Python modules:
+- franke_function.py: Returns z according to Franke's Function given x and y.
+- regression.py: My own SGD implementation of OLS and Ridge regression.
+- regression_analytical.py: My own analytical implementation of OLS and Ridge regression. 
+- logistic_regression.py: My own SGD implementation of logistic regression. 
+- neural_network.py: My own implementation of a feed forewrd neural network.  
+
+Jupyter notebooks:
+- ex_a_SGD regression: OLS and Ridge polynomial fit to Frankes function using SGD and an analytical expresion
+- ex_bc_NN regression: Neural network fit to Frankes function. 
+- ex_d_NN Classification 3: Neural network fit to the brest cancer dataset
+- ex_e_Logistic Regression 3: Logistic Regressionfit to the brest cancer dataset

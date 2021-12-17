@@ -1,17 +1,25 @@
-This is the repository for Project 2 in the course FYS-STK4155 at UiO. It contains the following files:
+This is the repository for Project 3 in the course FYS-STK4155 at UiO. It contains the following files:
 
 Project report:
-- Report_Project_2.pdf: Report for project 2.
+- Report_Project_3.pdf: Report for project 3.
+- Report_Project_3_optional.pdf: Optional exercise.
 
-Python modules:
-- franke_function.py: Returns z according to Franke's Function given x and y.
-- regression.py: My own SGD implementation of OLS and Ridge regression.
-- regression_analytical.py: My own analytical implementation of OLS and Ridge regression. 
-- logistic_regression.py: My own SGD implementation of logistic regression. 
-- neural_network.py: My own implementation of a feed forewrd neural network.  
+Python scripts:
+- get_radar.py: Download radar image time series for classification. 
+- get_radar_regression.py: Download radar image for regression. 
+- get_weather_station.py: Download measured precipitation for Rustad weatherstation from Frost API
+- radar.py: Function to connect to thredds.
 
 Jupyter notebooks:
-- ex_a_SGD regression: OLS and Ridge polynomial fit to Frankes function using SGD and an analytical expresion
-- ex_bc_NN regression: Neural network fit to Frankes function. 
-- ex_d_NN Classification 3: Neural network fit to the brest cancer dataset
-- ex_e_Logistic Regression 3: Logistic Regressionfit to the brest cancer dataset
+- Classification_Radar.ipynb: Classification of 7,5min precipitation events. 
+- Classification_Radar_1h.ipynb: Classification of 1h precipitation events. 
+- Regression_Radar_Image.ipynb: Regression radar image
+
+Data:
+- radar.pkl: 4x5 pixels radar image time series. 
+- radar_regression.pkl: Large radar image over Eastern Norway
+
+Pictures:
+- east_norway.png: Study area regression problem.
+- study_area.png: Study area Ås
+- radar_grid.png: Example 4x5 radar grid
